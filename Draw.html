@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>간단한 그림 그리기 앱</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>간단한 그림 그리기 앱</h1>
+  <canvas id="myCanvas" width="400" height="400"></canvas>
+  <br>
+  <button onclick="clearCanvas()">지우기</button>
+  <button onclick="exportCanvas()">내보내기</button>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const context = canvas.getContext('2d');
+    let isDrawing = false;
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    function startDrawing(e) {
+      isDrawing = true;
+      draw(e);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+
+      context.lineWidth = 5;
+      context.lineCap = 'round';
+      context.strokeStyle = '#000';
+
+      context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+      context.stroke();
+      context.beginPath();
+      context.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+      context.beginPath();
+    }
+
+    function clearCanvas() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function exportCanvas() {
+      const dataUrl = canvas.toDataURL(); // 캔버스 이미지를 데이터 URL로 변환
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = 'my_drawing.png';
+      a.click();
+    }
+  </script>
+</body>
+</html>
